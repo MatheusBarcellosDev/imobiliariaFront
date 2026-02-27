@@ -258,7 +258,7 @@ export default function EditImovelTabs({ params }: { params: Promise<{ id: strin
             ) : (
                 <>
                     {/* TAB NAVIGATION */}
-                    <div className="flex overflow-x-auto border-b border-white/10 mb-8 pb-px no-scrollbar">
+                    <div className="flex flex-wrap border-b border-white/10 mb-8 pb-px gap-y-2">
                         <TabButton id="basic" label="Informações Básicas" />
                         <TabButton id="photos" label="Fotos (Galeria)" />
                         <TabButton id="documents" label="Documentos" />

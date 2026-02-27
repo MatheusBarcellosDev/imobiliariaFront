@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Search, Edit2, Trash2, ExternalLink, ImageIcon } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, ExternalLink, ImageIcon, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
@@ -27,6 +27,47 @@ export default function GestaoImoveis() {
         p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const token = typeof window !== 'undefined' ? localStorage.getItem('@Imobiliaria:token') : '';
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Deseja realmente excluir este imóvel permanentemente? Essa ação não pode ser desfeita.')) return;
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+            const res = await fetch(`${apiUrl}/properties/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setProperties(prev => prev.filter(p => p.id !== id));
+            } else {
+                alert('Erro ao excluir imóvel. Verifique suas permissões.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro fatal ao conectar com o servidor.');
+        }
+    };
+
+    const handleTogglePublish = async (id: string, currentStatus: boolean, e: React.MouseEvent) => {
+        e.preventDefault(); // Evita navegar ao clicar
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+            const res = await fetch(`${apiUrl}/properties/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ published: !currentStatus })
+            });
+            if (res.ok) {
+                setProperties(prev => prev.map(p => p.id === id ? { ...p, published: !currentStatus } : p));
+            } else {
+                alert('Erro ao alterar status do imóvel.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro fatal ao conectar com o servidor.');
+        }
+    };
 
     return (
         <div className="max-w-6xl mx-auto">
@@ -115,13 +156,16 @@ export default function GestaoImoveis() {
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button onClick={(e) => handleTogglePublish(property.id, property.published ?? false, e)} className={`${property.published ? "text-yellow-500 hover:text-yellow-400" : "text-green-400 hover:text-green-300"} transition-colors p-1`} title={property.published ? "Ocultar / Rascunho" : "Publicar no Site"}>
+                                                    {property.published ? <EyeOff size={16} /> : <Eye size={16} />}
+                                                </button>
                                                 <Link href={`/imoveis/${property.id}`} target="_blank" className="text-white/50 hover:text-white transition-colors p-1" title="Ver Site">
                                                     <ExternalLink size={16} />
                                                 </Link>
                                                 <Link href={`/dashboard/imoveis/${property.id}`} className="text-accent hover:text-accent/80 transition-colors p-1" title="Editar">
                                                     <Edit2 size={16} />
                                                 </Link>
-                                                <button className="text-red-400 hover:text-red-300 transition-colors p-1" title="Excluir">
+                                                <button onClick={() => handleDelete(property.id)} className="text-red-400 hover:text-red-300 transition-colors p-1" title="Excluir">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </div>

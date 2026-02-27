@@ -101,7 +101,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="glass-bronze p-8 md:p-10 rounded-2xl flex flex-col gap-3 text-center md:text-left shrink-0 min-w-[320px] shadow-2xl border border-white/10"
+                        className="glass-bronze p-8 md:p-10 rounded-2xl lg:hidden flex flex-col gap-3 text-center md:text-left shrink-0 min-w-[320px] shadow-2xl border border-white/10"
                     >
                         <div className="text-sm uppercase tracking-[0.15em] text-white/70 font-medium">Valor de Venda</div>
                         <div className="text-4xl md:text-5xl font-display font-medium text-white mb-2">{formatPrice(property.price)}</div>
@@ -132,7 +132,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                             <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
                                 <span className="material-symbols-outlined text-primary text-4xl mb-2">shower</span>
                                 <div className="text-3xl font-display text-white">{property.bathrooms}</div>
-                                <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Banhos</div>
+                                <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Banheiros</div>
                             </div>
                             <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
                                 <span className="material-symbols-outlined text-primary text-4xl mb-2">directions_car</span>
@@ -157,26 +157,42 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                     </div>
 
                     <div className="lg:col-span-4">
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="bg-white/5 border border-white/10 p-10 rounded-3xl sticky top-32"
-                        >
-                            <h4 className="text-2xl font-display font-medium text-white mb-8 pb-4 border-b border-white/10">Características</h4>
-                            {features.length > 0 ? (
-                                <ul className="flex flex-col gap-6">
-                                    {features.map((f: string) => (
-                                        <li key={f} className="flex items-center gap-4 text-white/80 font-light text-base">
-                                            <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
-                                            <span>{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p className="text-white/50 text-sm font-light">Nenhuma característica cadastrada.</p>
-                            )}
-                        </motion.div>
+                        <div className="sticky top-32 flex flex-col gap-8 z-10 w-full mb-16">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                className="glass-bronze p-8 md:p-10 rounded-3xl hidden lg:flex flex-col gap-3 shadow-2xl border border-white/10"
+                            >
+                                <div className="text-sm uppercase tracking-[0.15em] text-white/70 font-medium">Valor de Venda</div>
+                                <div className="text-4xl md:text-5xl font-display font-medium text-white mb-2">{formatPrice(property.price)}</div>
+                                <button className="bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors mt-2 w-full">
+                                    <span>AGENDAR VISITA</span>
+                                    <span className="material-symbols-outlined text-lg">calendar_today</span>
+                                </button>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                className="bg-white/5 border border-white/10 p-10 rounded-3xl"
+                            >
+                                <h4 className="text-2xl font-display font-medium text-white mb-8 pb-4 border-b border-white/10">Características</h4>
+                                {features.length > 0 ? (
+                                    <ul className="flex flex-col gap-6">
+                                        {features.map((f: string) => (
+                                            <li key={f} className="flex items-center gap-4 text-white/80 font-light text-base">
+                                                <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                                <span>{f}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-white/50 text-sm font-light">Nenhuma característica cadastrada.</p>
+                                )}
+                            </motion.div>
+                        </div>
                     </div>
                 </div>
             </section>
