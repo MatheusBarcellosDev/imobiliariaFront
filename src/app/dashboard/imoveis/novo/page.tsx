@@ -2,12 +2,15 @@
 
 import { useState, DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, Loader2, Info, UploadCloud, GripVertical, Trash2, Star, FileText, RefreshCw } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Info, UploadCloud, GripVertical, Trash2, Star, FileText, RefreshCw, GripHorizontal, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-type Tab = 'basic' | 'location' | 'features' | 'finance' | 'condo' | 'internal' | 'media';
+type Tab = 'basic' | 'location' | 'features' | 'finance' | 'condo' | 'internal' | 'photos' | 'documents';
 
 export default function NovoImovelTabs() {
     const router = useRouter();
@@ -97,16 +100,42 @@ export default function NovoImovelTabs() {
         }
     };
 
-    const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => setDraggedImageIndex(index);
-    const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
-    const handleDrop = (e: DragEvent<HTMLDivElement>, targetIndex: number) => {
-        e.preventDefault();
-        if (draggedImageIndex === null || draggedImageIndex === targetIndex) return;
-        const newImages = [...images];
-        const [draggedItem] = newImages.splice(draggedImageIndex, 1);
-        newImages.splice(targetIndex, 0, draggedItem);
-        setDraggedImageIndex(null);
-        setImages(newImages);
+    // Sensores do DnD Kit
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (active.id !== over?.id) {
+            setImages((items) => {
+                const oldIndex = items.indexOf(active.id as string);
+                const newIndex = items.indexOf(over!.id as string);
+                return arrayMove(items, oldIndex, newIndex);
+            });
+        }
+    };
+
+    // Componente Item Ordenável da Foto
+    const SortableImage = ({ url, index }: { url: string, index: number }) => {
+        const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: url });
+        const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 1 };
+
+        return (
+            <div ref={setNodeRef} style={style} className={`relative group rounded-2xl overflow-hidden bg-black/20 border-2 ${index === 0 ? 'border-primary shadow-[0_0_20px_rgba(255,215,0,0.2)]' : 'border-white/10 hover:border-white/30'} transition-all aspect-[4/3]`}>
+                <Image src={url} alt={`Photo ${index}`} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
+                    <div className="flex justify-between items-start">
+                        {index === 0 && <span className="bg-primary text-background-dark text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1"><Star size={12} fill="currentColor" /> Capa</span>}
+                        <button type="button" onClick={() => setImages(prev => prev.filter(i => i !== url))} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg backdrop-blur-md transition-colors ml-auto"><Trash2 size={16} /></button>
+                    </div>
+                    <div {...attributes} {...listeners} className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 cursor-grab active:cursor-grabbing w-full">
+                        <GripHorizontal size={18} /> Arrastar
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -189,7 +218,8 @@ export default function NovoImovelTabs() {
             {/* TAB NAVIGATION */}
             <div className="flex overflow-x-auto border-b border-white/10 mb-8 pb-px no-scrollbar">
                 <TabButton id="basic" label="Informações Básicas" />
-                <TabButton id="media" label="Fotos e Documentos" />
+                <TabButton id="photos" label="Fotos (Galeria)" />
+                <TabButton id="documents" label="Documentos" />
                 <TabButton id="location" label="Localização" />
                 <TabButton id="features" label="Estrutura e Técnicos" />
                 <TabButton id="finance" label="Valores e Permuta" />
@@ -504,79 +534,81 @@ export default function NovoImovelTabs() {
                     </div>
                 </div>
 
-                {/* 7. MEDIA (FOTOS E DOCS) */}
-                <div className={activeTab === 'media' ? 'block space-y-6' : 'hidden'}>
+                {/* 7. FOTOS E GALERIA */}
+                <div className={activeTab === 'photos' ? 'block space-y-6' : 'hidden'}>
                     {uploadingInfo.active && (
                         <div className="w-full bg-primary/20 border border-primary text-primary px-4 py-3 rounded-lg flex items-center gap-3 animate-pulse">
                             <Loader2 size={18} className="animate-spin" />
                             <span className="font-medium text-sm">{uploadingInfo.text}</span>
                         </div>
                     )}
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* IMAGENS */}
-                        <div className="glass p-8 rounded-2xl border border-white/10 space-y-6">
-                            <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                                <h3 className="text-xl font-medium text-white">Galeria de Fotos</h3>
-                                <label className="bg-primary hover:bg-primary/90 text-background-dark px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center gap-2">
-                                    <UploadCloud size={16} /> Adicionar Fotos
-                                    <input type="file" multiple accept="image/*" onChange={(e) => handleUploadFiles(e, true)} className="hidden" />
-                                </label>
+                    <div className="glass p-8 rounded-2xl border border-white/10 space-y-6">
+                        <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                            <div>
+                                <h3 className="text-xl font-medium text-white mb-1">Galeria de Fotos do Imóvel</h3>
+                                <p className="text-sm text-white/50">Envie fotos em alta resolução. A primeira foto (com selo amarelo) será a capa do anúncio.</p>
                             </div>
-                            <p className="text-xs text-white/50">A primeira foto com a estrela (<Star size={12} className="inline" />) aparecerá na vitrine como destaque. Arraste as fotos para ordernar.</p>
-                            <div className="space-y-3">
-                                {images.length === 0 ? (
-                                    <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-black/20 text-white/40 text-sm">Nenhuma foto anexada.</div>
-                                ) : (
-                                    images.map((url, idx) => (
-                                        <div
-                                            key={url + idx} draggable onDragStart={(e) => handleDragStart(e, idx)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, idx)}
-                                            className={`flex items-center gap-4 bg-[#1a160f] border border-white/10 rounded-xl p-3 shadow-lg group transition-all cursor-grab active:cursor-grabbing ${draggedImageIndex === idx ? 'opacity-50 scale-95' : 'opacity-100'}`}
-                                        >
-                                            <div className="text-white/30 group-hover:text-white/70 px-2 cursor-grab"><GripVertical size={20} /></div>
-                                            <div className="relative w-16 h-16 rounded overflow-hidden shrink-0 bg-black/50">
-                                                <Image src={url} alt="Thb" fill className="object-cover" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-white text-sm truncate">{url.split('/').pop()}</p>
-                                                {idx === 0 && <span className="text-xs text-primary font-bold flex items-center gap-1 w-fit mt-1"><Star size={12} fill="currentColor" /> Destaque Oficial</span>}
-                                            </div>
-                                            <button type="button" onClick={() => setImages(prev => prev.filter((_, i) => i !== idx))} className="p-2 text-white/30 hover:text-red-400 rounded-lg">
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
+                            <label className="bg-primary hover:bg-primary/90 text-background-dark px-6 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2 shadow-lg">
+                                <UploadCloud size={20} /> Adicionar Fotos
+                                <input type="file" multiple accept="image/*" onChange={(e) => handleUploadFiles(e, true)} className="hidden" />
+                            </label>
                         </div>
 
-                        {/* DOCUMENTOS */}
-                        <div className="glass p-8 rounded-2xl border border-white/10 space-y-6 self-start">
-                            <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                                <h3 className="text-xl font-medium text-white">Documentos Ocultos</h3>
-                                <label className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center gap-2">
-                                    <FileText size={16} /> Anexar DOCs
-                                    <input type="file" multiple accept=".pdf,.doc,.docx" onChange={(e) => handleUploadFiles(e, false)} className="hidden" />
-                                </label>
+                        {images.length === 0 ? (
+                            <div className="text-center py-20 border border-dashed border-white/10 rounded-2xl bg-black/20 text-white/40 flex flex-col items-center justify-center gap-4">
+                                <ImageIcon size={48} className="text-white/20" />
+                                <p>Nenhuma foto anexada. Faça o upload para preencher a galeria.</p>
                             </div>
-                            <p className="text-xs text-white/50">Plantas baixas, IPTU, escrituras. Visíveis somente para a administração e clientes aprovados.</p>
-                            <div className="space-y-3">
-                                {documents.length === 0 ? (
-                                    <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-black/20 text-white/40 text-sm">Nenhum documento salvo.</div>
-                                ) : (
-                                    documents.map((url, idx) => (
-                                        <div key={url + idx} className="flex items-center gap-4 bg-[#1a160f] border border-white/10 rounded-xl p-3 shadow-lg">
-                                            <div className="w-12 h-12 rounded bg-white/5 flex items-center justify-center text-white/50 shrink-0"><FileText size={20} /></div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-white text-sm truncate">{url.split('/').pop()}</p>
-                                            </div>
-                                            <button type="button" onClick={() => setDocuments(prev => prev.filter((_, i) => i !== idx))} className="p-2 text-white/30 hover:text-red-400 rounded-lg">
-                                                <Trash2 size={18} />
-                                            </button>
+                        ) : (
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                <SortableContext items={images} strategy={rectSortingStrategy}>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                        {images.map((url, idx) => (
+                                            <SortableImage key={url} url={url} index={idx} />
+                                        ))}
+                                    </div>
+                                </SortableContext>
+                            </DndContext>
+                        )}
+                    </div>
+                </div>
+
+                {/* 8. DOCUMENTOS */}
+                <div className={activeTab === 'documents' ? 'block space-y-6' : 'hidden'}>
+                    {uploadingInfo.active && (
+                        <div className="w-full bg-primary/20 border border-primary text-primary px-4 py-3 rounded-lg flex items-center gap-3 animate-pulse">
+                            <Loader2 size={18} className="animate-spin" />
+                            <span className="font-medium text-sm">{uploadingInfo.text}</span>
+                        </div>
+                    )}
+                    <div className="glass p-8 rounded-2xl border border-white/10 space-y-6">
+                        <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                            <div>
+                                <h3 className="text-xl font-medium text-white mb-1">Documentos Confidenciais</h3>
+                                <p className="text-sm text-white/50">Contratos, Matrículas, Cópias de IPTU e Documentações do Vendedor. Oculto para o público.</p>
+                            </div>
+                            <label className="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all cursor-pointer flex items-center gap-2">
+                                <FileText size={20} /> Anexar DOCs
+                                <input type="file" multiple accept=".pdf,.doc,.docx" onChange={(e) => handleUploadFiles(e, false)} className="hidden" />
+                            </label>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            {documents.length === 0 ? (
+                                <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-black/20 text-white/40 text-sm">Nenhum documento salvo.</div>
+                            ) : (
+                                documents.map((url, idx) => (
+                                    <div key={url + idx} className="flex items-center gap-4 bg-[#1a160f] border border-white/10 rounded-xl p-4 shadow-lg hover:border-white/30 transition-colors">
+                                        <div className="w-12 h-12 rounded bg-white/5 flex items-center justify-center text-white/50 shrink-0"><FileText size={20} /></div>
+                                        <div className="flex-1 min-w-0 flex flex-col">
+                                            <p className="text-white font-medium truncate">{url.split('/').pop()}</p>
+                                            <a href={url} target="_blank" className="text-xs text-primary hover:underline w-fit mt-1">Ver/Baixar Documento Original</a>
                                         </div>
-                                    ))
-                                )}
-                            </div>
+                                        <button type="button" onClick={() => setDocuments(prev => prev.filter((_, i) => i !== idx))} className="p-3 text-white/30 hover:text-red-400 bg-white/5 hover:bg-red-500/10 rounded-lg transition-colors">
+                                            <Trash2 size={20} />
+                                        </button>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
