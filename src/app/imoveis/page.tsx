@@ -97,8 +97,9 @@ function ImoveisContent() {
                                     neighborhood={property.neighborhood?.name || property.address || "Localização não informada"}
                                     beds={property.bedrooms}
                                     baths={property.bathrooms}
-                                    area={property.area}
+                                    area={property.privateArea || property.area}
                                     image={property.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1800&q=80'}
+                                    featured={property.superFeatured}
                                 />
                             ))}
                         </motion.div>

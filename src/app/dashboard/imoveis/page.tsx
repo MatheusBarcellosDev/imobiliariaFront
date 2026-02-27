@@ -28,11 +28,12 @@ export default function GestaoImoveis() {
         p.id.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('@Imobiliaria:token') : '';
 
     const handleDelete = async (id: string) => {
         if (!confirm('Deseja realmente excluir este imóvel permanentemente? Essa ação não pode ser desfeita.')) return;
+
         try {
+            const token = localStorage.getItem('@Imobiliaria:token');
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
             const res = await fetch(`${apiUrl}/properties/${id}`, {
                 method: 'DELETE',
@@ -52,6 +53,7 @@ export default function GestaoImoveis() {
     const handleTogglePublish = async (id: string, currentStatus: boolean, e: React.MouseEvent) => {
         e.preventDefault(); // Evita navegar ao clicar
         try {
+            const token = localStorage.getItem('@Imobiliaria:token');
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
             const res = await fetch(`${apiUrl}/properties/${id}`, {
                 method: 'PUT',
@@ -152,7 +154,7 @@ export default function GestaoImoveis() {
                                             )}
                                         </td>
                                         <td className="p-4 text-white/70 text-sm font-light">
-                                            {property.featured ? '⭐ Destaque' : '-'}
+                                            {property.superFeatured ? '⭐ Destaque' : '-'}
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">

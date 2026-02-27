@@ -14,9 +14,10 @@ interface PropertyCardProps {
     baths: number;
     area: number;
     image: string;
+    featured?: boolean;
 }
 
-export default function PropertyCard({ id = "1", title, price, neighborhood, beds, baths, area, image }: PropertyCardProps) {
+export default function PropertyCard({ id = "1", title, price, neighborhood, beds, baths, area, image, featured }: PropertyCardProps) {
     return (
         <Link href={`/imoveis/${id}`} className="block">
             <div className="group flex flex-col gap-5 cursor-pointer h-full">
@@ -27,9 +28,11 @@ export default function PropertyCard({ id = "1", title, price, neighborhood, bed
                         fill
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 left-4 bg-background-dark/60 backdrop-blur-md px-3 py-1 rounded text-primary text-xs font-bold uppercase tracking-widest">
-                        Destaque
-                    </div>
+                    {featured && (
+                        <div className="absolute top-4 left-4 bg-background-dark/60 backdrop-blur-md px-3 py-1 rounded text-primary text-xs font-bold uppercase tracking-widest">
+                            Destaque
+                        </div>
+                    )}
                 </div>
 
                 <div className="space-y-3">

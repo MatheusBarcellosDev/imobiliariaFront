@@ -52,8 +52,9 @@ export default function FeaturedProperties({ initialProperties = [] }: { initial
             neighborhood: p.neighborhood?.name || p.address || "Localização não informada",
             beds: p.bedrooms,
             baths: p.bathrooms,
-            area: p.area,
-            image: p.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1800&q=80'
+            area: p.privateArea || p.area,
+            image: p.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1800&q=80',
+            featured: p.superFeatured
         }))
         : mockProperties;
 
