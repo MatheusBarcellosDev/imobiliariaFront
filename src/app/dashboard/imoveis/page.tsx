@@ -115,9 +115,6 @@ export default function GestaoImoveis() {
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Link href={`/dashboard/imoveis/${property.id}/midia`} className="text-primary hover:text-primary/80 transition-colors p-1" title="Gerenciar Mídia (Fotos e Docs)">
-                                                    <ImageIcon size={16} />
-                                                </Link>
                                                 <Link href={`/imoveis/${property.id}`} target="_blank" className="text-white/50 hover:text-white transition-colors p-1" title="Ver Site">
                                                     <ExternalLink size={16} />
                                                 </Link>
