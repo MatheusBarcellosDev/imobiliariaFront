@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, Loader2, Info } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Info, UploadCloud, GripVertical, Trash2, Star, FileText } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 
-type Tab = 'basic' | 'location' | 'features' | 'finance' | 'condo' | 'internal';
+type Tab = 'basic' | 'location' | 'features' | 'finance' | 'condo' | 'internal' | 'media';
 
 export default function NovoImovelTabs() {
     const router = useRouter();
@@ -43,6 +44,15 @@ export default function NovoImovelTabs() {
     const [condoAmenities, setCondoAmenities] = useState<string[]>([]);
     const [exchangeOptions, setExchangeOptions] = useState<string[]>([]);
 
+    // Estados de Mídia
+    const [images, setImages] = useState<string[]>([]);
+    const [documents, setDocuments] = useState<string[]>([]);
+    const [uploadingInfo, setUploadingInfo] = useState<{ active: boolean; text: string }>({ active: false, text: "" });
+    const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
+
+    // Estado da Ação (Rascunho ou Publicar)
+    const [submitType, setSubmitType] = useState<'DRAFT' | 'PUBLISH'>('DRAFT');
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         if (type === 'checkbox') {
@@ -57,6 +67,42 @@ export default function NovoImovelTabs() {
         setter(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
     };
 
+    // Lógicas de Upload
+    const handleUploadFiles = async (e: React.ChangeEvent<HTMLInputElement>, isImage: boolean) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        setUploadingInfo({ active: true, text: `Fazendo upload de ${e.target.files.length} arquivo(s)...` });
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+            const formData = new FormData();
+            Array.from(e.target.files).forEach(f => formData.append("files", f));
+
+            const res = await fetch(`${apiUrl}/upload`, { method: "POST", body: formData });
+            const data = await res.json();
+
+            if (data.urls) {
+                if (isImage) setImages(prev => [...prev, ...data.urls]);
+                else setDocuments(prev => [...prev, ...data.urls]);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro durante o upload.");
+        } finally {
+            setUploadingInfo({ active: false, text: "" });
+        }
+    };
+
+    const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => setDraggedImageIndex(index);
+    const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
+    const handleDrop = (e: DragEvent<HTMLDivElement>, targetIndex: number) => {
+        e.preventDefault();
+        if (draggedImageIndex === null || draggedImageIndex === targetIndex) return;
+        const newImages = [...images];
+        const [draggedItem] = newImages.splice(draggedImageIndex, 1);
+        newImages.splice(targetIndex, 0, draggedItem);
+        setDraggedImageIndex(null);
+        setImages(newImages);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -64,8 +110,15 @@ export default function NovoImovelTabs() {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
+            // Se for rascunho, bypassamos os fields vazios com fallbacks.
+            const isDraft = submitType === 'DRAFT';
+
             const payload = {
                 ...formData,
+                title: formData.title || (isDraft ? "Rascunho de Imóvel" : ""),
+                description: formData.description || (isDraft ? "Descrição pendente..." : ""),
+                published: !isDraft,
+
                 // Conversões Numéricas vitais
                 price: parseFloat(formData.price) || 0,
                 area: parseFloat(formData.area) || 0,
@@ -76,7 +129,8 @@ export default function NovoImovelTabs() {
                 amenities,
                 condoAmenities,
                 exchangeOptions,
-                images: [], documents: []
+                images,
+                documents
             };
 
             const postRes = await fetch(`${apiUrl}/properties`, {
@@ -86,8 +140,8 @@ export default function NovoImovelTabs() {
             });
 
             if (postRes.ok) {
-                const responseData = await postRes.json();
-                router.push(`/dashboard/imoveis/${responseData.id || responseData.property?.id}/midia`);
+                // Ao criar com sucesso, volta para a lista de imóveis.
+                router.push(`/dashboard/imoveis`);
             } else {
                 const err = await postRes.json();
                 alert("Erro ao criar imóvel: " + (err.error || "Tente novamente."));
@@ -106,8 +160,8 @@ export default function NovoImovelTabs() {
             type="button"
             onClick={() => setActiveTab(id)}
             className={`px-6 py-3 font-medium text-sm transition-all border-b-2 whitespace-nowrap ${activeTab === id
-                    ? 'border-primary text-primary bg-primary/5'
-                    : 'border-transparent text-white/50 hover:text-white/80 hover:bg-white/5'
+                ? 'border-primary text-primary bg-primary/5'
+                : 'border-transparent text-white/50 hover:text-white/80 hover:bg-white/5'
                 }`}
         >
             {label}
@@ -115,7 +169,7 @@ export default function NovoImovelTabs() {
     );
 
     return (
-        <div className="max-w-6xl mx-auto pb-32">
+        <div className="max-w-6xl mx-auto pb-40">
             <div className="flex items-center gap-4 mb-6">
                 <Link href="/dashboard/imoveis" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/70 hover:bg-white hover:text-black transition-colors shrink-0">
                     <ArrowLeft size={18} />
@@ -129,6 +183,7 @@ export default function NovoImovelTabs() {
             {/* TAB NAVIGATION */}
             <div className="flex overflow-x-auto border-b border-white/10 mb-8 pb-px no-scrollbar">
                 <TabButton id="basic" label="Informações Básicas" />
+                <TabButton id="media" label="Fotos e Documentos" />
                 <TabButton id="location" label="Localização" />
                 <TabButton id="features" label="Estrutura e Técnicos" />
                 <TabButton id="finance" label="Valores e Permuta" />
@@ -136,7 +191,7 @@ export default function NovoImovelTabs() {
                 <TabButton id="internal" label="SEO e Gestão" />
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8 pb-40">
 
                 {/* 1. BASIC INFO */}
                 <div className={activeTab === 'basic' ? 'block space-y-6' : 'hidden'}>
@@ -432,17 +487,112 @@ export default function NovoImovelTabs() {
                             </div>
                             <div className="col-span-1 md:col-span-2 space-y-2">
                                 <label className="text-sm text-white/70">Notas Privadas / Instruções de Visita</label>
-                                <textarea name="internalNotes" value={formData.internalNotes} onChange={handleChange} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white/80 font-mono text-sm" placeholder="O proprietário só permite visitas após as 14h..." />
+                                <textarea name="internalNotes" value={formData.internalNotes} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white/80 font-mono text-sm" placeholder="O proprietário só permite visitas após as 14h..." />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 7. MEDIA (FOTOS E DOCS) */}
+                <div className={activeTab === 'media' ? 'block space-y-6' : 'hidden'}>
+                    {uploadingInfo.active && (
+                        <div className="w-full bg-primary/20 border border-primary text-primary px-4 py-3 rounded-lg flex items-center gap-3 animate-pulse">
+                            <Loader2 size={18} className="animate-spin" />
+                            <span className="font-medium text-sm">{uploadingInfo.text}</span>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* IMAGENS */}
+                        <div className="glass p-8 rounded-2xl border border-white/10 space-y-6">
+                            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                                <h3 className="text-xl font-medium text-white">Galeria de Fotos</h3>
+                                <label className="bg-primary hover:bg-primary/90 text-background-dark px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center gap-2">
+                                    <UploadCloud size={16} /> Adicionar Fotos
+                                    <input type="file" multiple accept="image/*" onChange={(e) => handleUploadFiles(e, true)} className="hidden" />
+                                </label>
+                            </div>
+                            <p className="text-xs text-white/50">A primeira foto com a estrela (<Star size={12} className="inline" />) aparecerá na vitrine como destaque. Arraste as fotos para ordernar.</p>
+                            <div className="space-y-3">
+                                {images.length === 0 ? (
+                                    <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-black/20 text-white/40 text-sm">Nenhuma foto anexada.</div>
+                                ) : (
+                                    images.map((url, idx) => (
+                                        <div
+                                            key={url + idx} draggable onDragStart={(e) => handleDragStart(e, idx)} onDragOver={handleDragOver} onDrop={(e) => handleDrop(e, idx)}
+                                            className={`flex items-center gap-4 bg-[#1a160f] border border-white/10 rounded-xl p-3 shadow-lg group transition-all cursor-grab active:cursor-grabbing ${draggedImageIndex === idx ? 'opacity-50 scale-95' : 'opacity-100'}`}
+                                        >
+                                            <div className="text-white/30 group-hover:text-white/70 px-2 cursor-grab"><GripVertical size={20} /></div>
+                                            <div className="relative w-16 h-16 rounded overflow-hidden shrink-0 bg-black/50">
+                                                <Image src={url} alt="Thb" fill className="object-cover" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-white text-sm truncate">{url.split('/').pop()}</p>
+                                                {idx === 0 && <span className="text-xs text-primary font-bold flex items-center gap-1 w-fit mt-1"><Star size={12} fill="currentColor" /> Destaque Oficial</span>}
+                                            </div>
+                                            <button type="button" onClick={() => setImages(prev => prev.filter((_, i) => i !== idx))} className="p-2 text-white/30 hover:text-red-400 rounded-lg">
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        {/* DOCUMENTOS */}
+                        <div className="glass p-8 rounded-2xl border border-white/10 space-y-6 self-start">
+                            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                                <h3 className="text-xl font-medium text-white">Documentos Ocultos</h3>
+                                <label className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center gap-2">
+                                    <FileText size={16} /> Anexar DOCs
+                                    <input type="file" multiple accept=".pdf,.doc,.docx" onChange={(e) => handleUploadFiles(e, false)} className="hidden" />
+                                </label>
+                            </div>
+                            <p className="text-xs text-white/50">Plantas baixas, IPTU, escrituras. Visíveis somente para a administração e clientes aprovados.</p>
+                            <div className="space-y-3">
+                                {documents.length === 0 ? (
+                                    <div className="text-center py-10 border border-dashed border-white/10 rounded-xl bg-black/20 text-white/40 text-sm">Nenhum documento salvo.</div>
+                                ) : (
+                                    documents.map((url, idx) => (
+                                        <div key={url + idx} className="flex items-center gap-4 bg-[#1a160f] border border-white/10 rounded-xl p-3 shadow-lg">
+                                            <div className="w-12 h-12 rounded bg-white/5 flex items-center justify-center text-white/50 shrink-0"><FileText size={20} /></div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-white text-sm truncate">{url.split('/').pop()}</p>
+                                            </div>
+                                            <button type="button" onClick={() => setDocuments(prev => prev.filter((_, i) => i !== idx))} className="p-2 text-white/30 hover:text-red-400 rounded-lg">
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* SUBMIT FIXO NO RODAPÉ */}
-                <div className="fixed bottom-0 left-0 w-full bg-background-dark/95 backdrop-blur-xl border-t border-white/10 p-6 z-40 flex justify-end px-20 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
-                    <button type="submit" disabled={loading} className="bg-primary hover:bg-primary/90 text-background-dark px-12 py-4 rounded-xl font-bold transition-all flex items-center gap-3 disabled:opacity-50 text-xl tracking-wide">
-                        {loading ? <><Loader2 className="animate-spin" size={24} /> Registrando Megamodel...</> : "Pular para Fotos & Documentos"}
-                    </button>
+                <div className="fixed bottom-0 left-0 w-full bg-background-dark/95 backdrop-blur-xl border-t border-white/10 p-6 z-40 flex justify-end gap-4 px-10 md:px-20 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] transition-all">
+
+                    <div className="flex-1 max-w-6xl mx-auto flex justify-end items-center gap-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            formNoValidate
+                            onClick={() => setSubmitType('DRAFT')}
+                            className="bg-transparent hover:bg-white/5 border border-white/20 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-w-[220px]"
+                        >
+                            {loading && submitType === 'DRAFT' ? <Loader2 className="animate-spin" size={20} /> : "Salvar como Rascunho"}
+                        </button>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            onClick={() => setSubmitType('PUBLISH')}
+                            className="bg-primary hover:bg-primary/90 text-background-dark px-10 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg tracking-wide min-w-[240px] shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5)]"
+                        >
+                            {loading && submitType === 'PUBLISH' ? <Loader2 className="animate-spin" size={24} /> : "Publicar Oficialmente"}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
