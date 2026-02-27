@@ -2,7 +2,7 @@
 
 import { useState, DragEvent } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Check, Loader2, Info, UploadCloud, GripVertical, Trash2, Star, FileText } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Info, UploadCloud, GripVertical, Trash2, Star, FileText, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
@@ -65,6 +65,12 @@ export default function NovoImovelTabs() {
 
     const toggleArrayItem = (setter: React.Dispatch<React.SetStateAction<string[]>>, item: string) => {
         setter(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
+    };
+
+    const generateReferenceCode = () => {
+        const year = new Date().getFullYear();
+        const randomHex = Math.random().toString(16).substring(2, 6).toUpperCase();
+        setFormData(prev => ({ ...prev, referenceCode: `IMO-${year}-${randomHex}` }));
     };
 
     // Lógicas de Upload
@@ -199,7 +205,12 @@ export default function NovoImovelTabs() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm text-white/70">Código de Referência (ID)</label>
-                                <input name="referenceCode" value={formData.referenceCode} onChange={handleChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary" placeholder="IMO-2024-001" />
+                                <div className="flex gap-2">
+                                    <input name="referenceCode" value={formData.referenceCode} onChange={handleChange} className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-primary" placeholder="IMO-2024-001" />
+                                    <button type="button" onClick={generateReferenceCode} className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-4 flex items-center justify-center text-white/70 hover:text-white transition-colors" title="Gerar Código Automático">
+                                        <RefreshCw size={18} />
+                                    </button>
+                                </div>
                             </div>
                             <div className="col-span-1 md:col-span-2 space-y-2">
                                 <label className="text-sm text-white/70">Título do Anúncio * (H1)</label>
