@@ -216,26 +216,26 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                         className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
                         onClick={closeLightbox}
                     >
-                        <button onClick={closeLightbox} className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors z-[110]">
-                            <X size={40} />
+                        <button onClick={closeLightbox} className="absolute top-6 right-6 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors z-[110] bg-black/40 backdrop-blur-md p-2 rounded-full">
+                            <X size={28} className="md:w-10 md:h-10" />
                         </button>
 
-                        <button onClick={prevImage} className="absolute left-8 text-white/50 hover:text-primary transition-colors z-[110]">
-                            <ChevronLeft size={60} />
+                        <button onClick={prevImage} className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-primary transition-colors z-[110] bg-black/40 backdrop-blur-md p-2 rounded-full">
+                            <ChevronLeft size={36} className="md:w-[60px] md:h-[60px]" />
                         </button>
 
-                        <button onClick={nextImage} className="absolute right-8 text-white/50 hover:text-primary transition-colors z-[110]">
-                            <ChevronRight size={60} />
+                        <button onClick={nextImage} className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/50 hover:text-primary transition-colors z-[110] bg-black/40 backdrop-blur-md p-2 rounded-full">
+                            <ChevronRight size={36} className="md:w-[60px] md:h-[60px]" />
                         </button>
 
-                        <div className="relative w-full max-w-5xl aspect-video mx-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="relative w-full h-[70vh] md:h-[85vh] max-w-6xl mx-auto px-4 md:px-0" onClick={(e) => e.stopPropagation()}>
                             <Image
                                 src={galleryImages[currentImageIndex]}
                                 alt="Imagem em Destaque"
                                 fill
                                 className="object-contain"
                             />
-                            <div className="absolute bottom-4 left-0 right-0 text-center text-white/50 text-sm tracking-widest uppercase">
+                            <div className="absolute -bottom-14 left-0 right-0 text-center text-white/50 text-sm tracking-widest uppercase">
                                 {currentImageIndex + 1} / {galleryImages.length}
                             </div>
                         </div>

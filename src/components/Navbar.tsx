@@ -28,12 +28,12 @@ export default function Navbar() {
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/10 ${scrolled ? "bg-background-dark/90 backdrop-blur-md py-4 shadow-lg" : "bg-transparent py-4"}`}
             >
                 <div className="max-w-7xl mx-auto px-6 md:px-20 flex justify-between items-center text-slate-100">
-                    <Link href="/" className="relative w-64 md:w-80 h-14 md:h-16 flex items-center justify-start overflow-hidden">
+                    <Link href="/" className="relative w-48 md:w-80 h-10 md:h-16 flex items-center justify-start overflow-hidden shrink-0">
                         <Image
                             src="/logo.png"
                             alt="Lorena Lorenzo Logo"
                             fill
-                            className="object-contain object-left scale-[1.8] origin-left"
+                            className="object-contain object-left scale-[1.3] md:scale-[1.8] origin-left"
                             priority
                         />
                     </Link>
