@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -27,15 +28,21 @@ export default function Navbar() {
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/10 ${scrolled ? "bg-background-dark/90 backdrop-blur-md py-4 shadow-lg" : "bg-transparent py-4"}`}
             >
                 <div className="max-w-7xl mx-auto px-6 md:px-20 flex justify-between items-center text-slate-100">
-                    <Link href="/" className="flex items-center gap-3">
-                        <h2 className="text-xl font-bold tracking-widest text-slate-100 uppercase font-display">Lorena Lorenzo</h2>
+                    <Link href="/" className="relative w-64 md:w-80 h-14 md:h-16 flex items-center justify-start overflow-hidden">
+                        <Image
+                            src="/logo.png"
+                            alt="Lorena Lorenzo Logo"
+                            fill
+                            className="object-contain object-left scale-[1.8] origin-left"
+                            priority
+                        />
                     </Link>
 
                     <div className="hidden md:flex gap-10 items-center text-sm font-medium tracking-wide">
                         <Link href="/imoveis" className="text-slate-300 hover:text-primary transition-colors duration-300">Imóveis</Link>
                         <Link href="/bairros" className="text-slate-300 hover:text-primary transition-colors duration-300">Bairros</Link>
-                        <Link href="#sobre" className="text-slate-300 hover:text-primary transition-colors duration-300">Sobre nós</Link>
-                        <Link href="#contato" className="text-slate-300 hover:text-primary transition-colors duration-300">Contato</Link>
+                        <Link href="/sobre" className="text-slate-300 hover:text-primary transition-colors duration-300">Sobre nós</Link>
+                        <Link href="/contato" className="text-slate-300 hover:text-primary transition-colors duration-300">Contato</Link>
                     </div>
 
                     <div className="hidden md:flex gap-6 items-center">
@@ -64,8 +71,8 @@ export default function Navbar() {
                     >
                         <Link href="/imoveis" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Imóveis</Link>
                         <Link href="/bairros" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Bairros</Link>
-                        <Link href="#sobre" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Sobre nós</Link>
-                        <Link href="#contato" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Contato</Link>
+                        <Link href="/sobre" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Sobre nós</Link>
+                        <Link href="/contato" onClick={() => setMenuOpen(false)} className="text-4xl font-display text-slate-100 hover:text-primary transition-colors">Contato</Link>
                         <Link href="/login" onClick={() => setMenuOpen(false)} className="text-xl font-display text-primary hover:text-white transition-colors mt-8">Acesso Membro</Link>
                     </motion.div>
                 )}

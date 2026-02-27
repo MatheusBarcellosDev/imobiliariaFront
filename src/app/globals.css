@@ -9,8 +9,8 @@
   --color-surface-dark: #2a2419;
 
   /* Typography */
-  --font-sans: "Noto Sans", var(--font-geist-sans), sans-serif;
-  --font-display: "Noto Serif", serif;
+  --font-sans: "Inter", var(--font-geist-sans), sans-serif;
+  --font-display: "Playfair Display", var(--font-geist-mono), serif;
 
   /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;

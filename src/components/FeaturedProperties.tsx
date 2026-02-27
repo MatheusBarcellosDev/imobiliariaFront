@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 import PropertyCard from "./PropertyCard";
 import Button from "./Button";
+import Link from "next/link";
 import { Property } from "@/lib/api";
 
 const mockProperties = [
@@ -65,13 +66,13 @@ export default function FeaturedProperties({ initialProperties = [] }: { initial
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6"
             >
-                <div className="space-y-2">
-                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-slate-100">Imóveis em Destaque</h2>
-                    <div className="h-1 w-20 bg-primary/40"></div>
+                <div>
+                    <h2 className="text-3xl md:text-4xl font-serif font-medium text-slate-100 mb-3 tracking-tight">Imóveis em Destaque</h2>
+                    <div className="h-1 w-24 bg-primary"></div>
                 </div>
-                <Button variant="outline" className="hidden md:flex">
-                    Ver Todos os Imóveis <span className="material-symbols-outlined ml-2 hover:translate-x-1 transition-transform">arrow_forward</span>
-                </Button>
+                <Link href="/imoveis" className="text-primary font-bold hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    VER TODOS OS IMÓVEIS <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                </Link>
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -89,9 +90,9 @@ export default function FeaturedProperties({ initialProperties = [] }: { initial
             </div>
 
             <div className="mt-8 flex justify-center md:hidden">
-                <Button variant="outline" className="w-full">
-                    Ver Todos os Imóveis <span className="material-symbols-outlined ml-2">arrow_forward</span>
-                </Button>
+                <Link href="/imoveis" className="text-primary font-bold flex items-center gap-2 hover:opacity-80 transition-opacity uppercase text-sm">
+                    Ver Todos os Imóveis <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                </Link>
             </div>
         </section>
     );

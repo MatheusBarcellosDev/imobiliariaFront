@@ -22,7 +22,7 @@ export default function AboutSection() {
                             <span className="text-primary tracking-[0.3em] uppercase text-xs font-bold">Sobre a Lorena Lorenzo</span>
                         </div>
 
-                        <h2 className="text-4xl md:text-5xl font-display text-slate-100 font-bold leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-display text-slate-100 font-medium leading-tight">
                             Sua Parceira de Confiança no <br /> <i className="font-light text-primary/70">Mercado Imobiliário</i>
                         </h2>
 

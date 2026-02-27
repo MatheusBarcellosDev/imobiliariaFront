@@ -69,7 +69,7 @@ export default function HeroSection() {
                         initial={{ opacity: 0, y: 100 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-5xl md:text-7xl font-display font-black text-slate-100 leading-tight"
+                        className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-slate-100 leading-tight tracking-tight"
                     >
                         O Imóvel dos Seus Sonhos, <br /> Aguarda
                     </motion.h1>

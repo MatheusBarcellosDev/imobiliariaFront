@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Noto_Serif } from "next/font/google";
+import Image from "next/image";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { AuthProvider } from "@/contexts/AuthContext";
 
-const notoSans = Noto_Sans({
+const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const notoSerif = Noto_Serif({
+const playfair = Playfair_Display({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
@@ -30,7 +31,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body suppressHydrationWarning className={`${notoSans.variable} ${notoSerif.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen`}>
+      <body suppressHydrationWarning className={`${inter.variable} ${playfair.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen`}>
         <AuthProvider>
           <SmoothScrollProvider>
             <LayoutWrapper
@@ -38,9 +39,13 @@ export default function RootLayout({
                 <footer className="bg-background border-t border-white/10 py-20 px-6 md:px-20">
                   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="space-y-6 col-span-1 md:col-span-1">
-                      <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-primary text-3xl">architecture</span>
-                        <h2 className="text-xl font-bold tracking-widest text-slate-100 uppercase font-display">Lorena Lorenzo</h2>
+                      <div className="relative w-64 md:w-72 h-12 flex items-center justify-start">
+                        <Image
+                          src="/logo.png"
+                          alt="Lorena Lorenzo Logo"
+                          fill
+                          className="object-contain object-left scale-[2.2] origin-left"
+                        />
                       </div>
                       <p className="text-slate-400 text-sm leading-relaxed">
                         Especializados em encontrar o imóvel perfeito para você, com foco em atendimento personalizado e transparência.

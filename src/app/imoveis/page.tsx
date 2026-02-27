@@ -59,20 +59,20 @@ function ImoveisContent() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="glass-bronze p-4 rounded-full flex flex-col md:flex-row gap-4 mb-16 items-center"
+                    className="glass-bronze p-4 rounded-full flex flex-col md:flex-row gap-4 mb-16 items-center border border-white/10 shadow-xl"
                 >
                     <div className="flex-1 flex items-center gap-3 px-6 py-2 border-b md:border-b-0 md:border-r border-white/10 w-full">
                         <Search className="text-primary/70" size={20} />
                         <input
                             type="text"
                             placeholder="Buscar por bairro, condomínio ou referência..."
-                            className="bg-transparent border-none outline-none text-slate-100 w-full placeholder:text-slate-400 font-light"
+                            className="bg-transparent border-none outline-none text-slate-100 w-full placeholder:text-slate-500 font-light"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
 
-                    <button className="flex items-center justify-center gap-2 px-8 py-3 hover:bg-white/5 rounded-full transition-colors shrink-0 text-sm tracking-widest uppercase text-slate-300 w-full md:w-auto">
+                    <button className="flex items-center justify-center gap-2 px-8 py-3 hover:bg-white/5 rounded-full transition-colors shrink-0 text-sm tracking-widest uppercase text-slate-300 w-full md:w-auto font-medium">
                         <Filter size={16} /> Filtros Avançados
                     </button>
                 </motion.div>
