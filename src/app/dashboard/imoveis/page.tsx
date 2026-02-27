@@ -100,9 +100,15 @@ export default function GestaoImoveis() {
                                         </td>
                                         <td className="p-4 text-white text-sm font-light whitespace-nowrap">{formatPrice(property.price)}</td>
                                         <td className="p-4">
-                                            <span className="text-xs px-2 py-1 rounded-md font-medium bg-green-500/10 text-green-400">
-                                                {property.status === 'AVAILABLE' ? 'Ativo' : property.status}
-                                            </span>
+                                            {property.published ? (
+                                                <span className="text-xs px-2 py-1 rounded-md font-medium bg-green-500/10 text-green-400">
+                                                    Ativo no Site
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs px-2 py-1 rounded-md font-medium bg-yellow-500/10 text-yellow-500">
+                                                    Rascunho Oculto
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="p-4 text-white/70 text-sm font-light">
                                             {property.featured ? '⭐ Destaque' : '-'}
@@ -115,9 +121,9 @@ export default function GestaoImoveis() {
                                                 <Link href={`/imoveis/${property.id}`} target="_blank" className="text-white/50 hover:text-white transition-colors p-1" title="Ver Site">
                                                     <ExternalLink size={16} />
                                                 </Link>
-                                                <button className="text-accent hover:text-accent/80 transition-colors p-1" title="Editar">
+                                                <Link href={`/dashboard/imoveis/${property.id}`} className="text-accent hover:text-accent/80 transition-colors p-1" title="Editar">
                                                     <Edit2 size={16} />
-                                                </button>
+                                                </Link>
                                                 <button className="text-red-400 hover:text-red-300 transition-colors p-1" title="Excluir">
                                                     <Trash2 size={16} />
                                                 </button>

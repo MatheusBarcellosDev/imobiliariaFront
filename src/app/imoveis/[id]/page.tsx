@@ -92,7 +92,7 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                             <span className="material-symbols-outlined text-primary text-xl">location_on</span>
                             <span className="text-primary uppercase tracking-[0.2em] text-sm font-bold">{property.neighborhood?.name || property.address || "Localização Privilegiada"}</span>
                         </div>
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-medium text-white max-w-4xl leading-tight capitalize">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium text-white max-w-4xl flex-wrap break-words leading-[1.1] capitalize">
                             {property.title}
                         </h1>
                     </motion.div>
