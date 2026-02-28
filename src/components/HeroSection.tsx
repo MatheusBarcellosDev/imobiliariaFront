@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Button from "./Button";
@@ -8,6 +8,11 @@ import Button from "./Button";
 export default function HeroSection() {
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [propertyType, setPropertyType] = useState("");
@@ -38,14 +43,19 @@ export default function HeroSection() {
 
     return (
         <section ref={containerRef} className="relative h-[85vh] w-full flex items-center justify-center px-6 overflow-hidden bg-background-dark">
-            <motion.div style={{ y, scale }} className="absolute inset-x-0 -top-10 h-[140vh] z-0 bg-background-dark">
+            <motion.div
+                style={{ y, scale }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isMounted ? 1 : 0 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="absolute inset-x-0 -top-10 h-[140vh] z-0 bg-background-dark"
+            >
                 <video
                     autoPlay
                     loop
                     muted
                     playsInline
                     preload="none"
-                    poster="/lorenalorenzo.jpg"
                     className="h-full w-full object-cover"
                     src="/heroVideo.mp4"
                 />

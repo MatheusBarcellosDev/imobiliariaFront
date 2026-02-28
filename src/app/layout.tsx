@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body suppressHydrationWarning className={`${inter.variable} ${playfair.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen`}>
+      <body suppressHydrationWarning className={`${inter.variable} ${playfair.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen overflow-x-hidden`}>
         <AuthProvider>
           <SmoothScrollProvider>
             <LayoutWrapper

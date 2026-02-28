@@ -113,6 +113,32 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                 </div>
             </section>
 
+            {/* Gallery */}
+            <section className="container mx-auto px-6 md:px-12 py-12">
+                <div className="flex items-center gap-4 mb-10">
+                    <div className="h-[1px] w-12 bg-primary" />
+                    <h3 className="text-3xl font-display font-medium text-white tracking-widest">Galeria</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {galleryImages.length > 0 ? galleryImages.map((img, idx) => (
+                        <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.6, delay: idx * 0.1 }}
+                            className="relative aspect-square cursor-pointer overflow-hidden rounded-2xl group"
+                            onClick={() => openLightbox(idx)}
+                        >
+                            <Image src={img} alt="Galeria" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                        </motion.div>
+                    )) : (
+                        <p className="text-white/50 col-span-3">Nenhuma imagem adicional disponível na galeria.</p>
+                    )}
+                </div>
+            </section>
+
+
             {/* Specifications & Description */}
             <section className="container mx-auto px-6 md:px-12 py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
@@ -197,30 +223,6 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                 </div>
             </section>
 
-            {/* Gallery */}
-            <section className="container mx-auto px-6 md:px-12">
-                <div className="flex items-center gap-4 mb-10">
-                    <div className="h-[1px] w-12 bg-primary" />
-                    <h3 className="text-3xl font-display font-medium text-white tracking-widest">Galeria</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {galleryImages.length > 0 ? galleryImages.map((img, idx) => (
-                        <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.6, delay: idx * 0.1 }}
-                            className="relative aspect-square cursor-pointer overflow-hidden rounded-2xl group"
-                            onClick={() => openLightbox(idx)}
-                        >
-                            <Image src={img} alt="Galeria" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                        </motion.div>
-                    )) : (
-                        <p className="text-white/50 col-span-3">Nenhuma imagem adicional disponível na galeria.</p>
-                    )}
-                </div>
-            </section>
 
             {/* Lightbox Modal */}
             <AnimatePresence>
