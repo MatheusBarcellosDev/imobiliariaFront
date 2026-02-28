@@ -50,6 +50,7 @@ export default function AboutSection() {
                             src="/lorenalorenzo.jpg"
                             alt="Interior de luxo Lorena Lorenzo"
                             fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
                             className="object-cover object-top rounded-xl"
                         />
                         {/* Decorational Frame */}

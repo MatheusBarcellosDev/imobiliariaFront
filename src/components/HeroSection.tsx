@@ -44,6 +44,8 @@ export default function HeroSection() {
                     loop
                     muted
                     playsInline
+                    preload="none"
+                    poster="/lorenalorenzo.jpg"
                     className="h-full w-full object-cover"
                     src="/heroVideo.mp4"
                 />

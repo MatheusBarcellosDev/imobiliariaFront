@@ -33,6 +33,7 @@ export default function Navbar() {
                             src="/logo.png"
                             alt="Lorena Lorenzo Logo"
                             fill
+                            sizes="(max-width: 768px) 150px, 300px"
                             className="object-contain object-left scale-[1.3] md:scale-[1.8] origin-left"
                             priority
                         />

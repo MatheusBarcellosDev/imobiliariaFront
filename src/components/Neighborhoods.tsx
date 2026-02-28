@@ -54,6 +54,7 @@ export default function Neighborhoods() {
                                     alt={ns.name}
                                     width={800}
                                     height={1000}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
                             </div>
@@ -70,6 +71,7 @@ export default function Neighborhoods() {
                                         alt={`${ns.name} detail`}
                                         width={400}
                                         height={400}
+                                        sizes="(max-width: 768px) 0vw, 25vw"
                                         className="w-full h-full object-cover"
                                     />
                                 </motion.div>

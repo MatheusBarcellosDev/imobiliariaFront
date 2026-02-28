@@ -26,6 +26,7 @@ export default function PropertyCard({ id = "1", title, price, neighborhood, bed
                         src={image}
                         alt={title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
                     />
                     {featured && (
