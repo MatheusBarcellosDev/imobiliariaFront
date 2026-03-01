@@ -42,7 +42,7 @@ export default function HeroSection() {
     };
 
     return (
-        <section ref={containerRef} className="relative h-[85vh] w-full flex items-center justify-center px-6 overflow-hidden bg-background-dark">
+        <section ref={containerRef} className="relative h-[85vh] w-full flex items-center justify-center px-4 md:px-6 overflow-hidden bg-background-dark">
             <motion.div
                 style={{ y, scale }}
                 initial={{ opacity: 0 }}
@@ -65,7 +65,7 @@ export default function HeroSection() {
 
             <motion.div
                 style={{ opacity }}
-                className="relative z-20 max-w-4xl text-center flex flex-col items-center gap-8 mt-20"
+                className="relative z-20 w-full max-w-4xl text-center flex flex-col items-center gap-8 mt-20"
             >
                 <div className="space-y-4">
                     <motion.span

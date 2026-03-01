@@ -25,7 +25,7 @@ export default function Navbar() {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/10 ${scrolled ? "bg-background-dark/90 backdrop-blur-md py-4 shadow-lg" : "bg-transparent py-4"}`}
+                className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b border-white/10 ${scrolled ? "bg-background-dark/90 backdrop-blur-md py-4 shadow-lg" : "bg-transparent py-4"}`}
             >
                 <div className="max-w-7xl mx-auto px-6 md:px-20 flex justify-between items-center text-slate-100">
                     <Link href="/" className="relative w-48 md:w-80 h-10 md:h-16 flex items-center justify-start overflow-hidden shrink-0">

@@ -31,7 +31,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body suppressHydrationWarning className={`${inter.variable} ${playfair.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen overflow-x-hidden`}>
+      <body suppressHydrationWarning className={`${inter.variable} ${playfair.variable} antialiased bg-background-dark text-slate-100 font-sans selection:bg-primary/30 min-h-screen overflow-x-hidden w-full max-w-[100vw]`}>
         <AuthProvider>
           <SmoothScrollProvider>
             <LayoutWrapper
@@ -39,12 +39,12 @@ export default function RootLayout({
                 <footer className="bg-background border-t border-white/10 py-20 px-6 md:px-20">
                   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="space-y-6 col-span-1 md:col-span-1">
-                      <div className="relative w-64 md:w-72 h-12 flex items-center justify-start">
+                      <div className="relative w-64 md:w-72 h-12 flex items-center justify-start overflow-hidden">
                         <Image
                           src="/logo.png"
                           alt="Lorena Lorenzo Logo"
                           fill
-                          className="object-contain object-left scale-[2.2] origin-left"
+                          className="object-contain object-left scale-[1.5] md:scale-[2.2] origin-left"
                         />
                       </div>
                       <p className="text-slate-400 text-sm leading-relaxed">
