@@ -39,12 +39,12 @@ export default function RootLayout({
                 <footer className="bg-background border-t border-white/10 py-20 px-6 md:px-20">
                   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="space-y-6 col-span-1 md:col-span-1">
-                      <div className="relative w-64 md:w-72 h-12 flex items-center justify-start overflow-hidden">
+                      <div className="relative w-64 md:w-72 h-14 flex items-center justify-start">
                         <Image
-                          src="/logo.png"
+                          src="/logo-v2.png"
                           alt="Lorena Lorenzo Logo"
                           fill
-                          className="object-contain object-left scale-[1.5] md:scale-[2.2] origin-left"
+                          className="object-contain object-left"
                         />
                       </div>
                       <p className="text-slate-400 text-sm leading-relaxed">

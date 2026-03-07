@@ -113,115 +113,116 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                 </div>
             </section>
 
-            {/* Gallery */}
-            <section className="container mx-auto px-6 md:px-12 py-12">
-                <div className="flex items-center gap-4 mb-10">
-                    <div className="h-[1px] w-12 bg-primary" />
-                    <h3 className="text-3xl font-display font-medium text-white tracking-widest">Galeria</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {galleryImages.length > 0 ? galleryImages.map((img, idx) => (
-                        <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.6, delay: idx * 0.1 }}
-                            className="relative aspect-square cursor-pointer overflow-hidden rounded-2xl group"
-                            onClick={() => openLightbox(idx)}
-                        >
-                            <Image src={img} alt="Galeria" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                        </motion.div>
-                    )) : (
-                        <p className="text-white/50 col-span-3">Nenhuma imagem adicional disponível na galeria.</p>
-                    )}
-                </div>
-            </section>
-
-
-            {/* Specifications & Description */}
-            <section className="container mx-auto px-6 md:px-12 py-24">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                    <div className="lg:col-span-8 flex flex-col gap-16">
-                        {/* Status Bar */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="grid grid-cols-2 md:grid-cols-4 gap-6 py-10"
-                        >
-                            <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
-                                <span className="material-symbols-outlined text-primary text-4xl mb-2">bed</span>
-                                <div className="text-3xl font-display text-white">{property.bedrooms}</div>
-                                <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Suítes</div>
-                            </div>
-                            <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
-                                <span className="material-symbols-outlined text-primary text-4xl mb-2">shower</span>
-                                <div className="text-3xl font-display text-white">{property.bathrooms}</div>
-                                <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Banheiros</div>
-                            </div>
-                            <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
-                                <span className="material-symbols-outlined text-primary text-4xl mb-2">directions_car</span>
-                                <div className="text-3xl font-display text-white">{property.garages}</div>
-                                <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Vagas</div>
-                            </div>
-                        </motion.div>
-
-                        {/* Description */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="prose prose-invert prose-lg max-w-none font-light text-white/80 leading-relaxed bg-white/5 p-8 md:p-12 rounded-3xl border border-white/5"
-                        >
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="h-[1px] w-12 bg-primary" />
-                                <span className="text-primary tracking-[0.3em] uppercase text-xs font-bold">Descrição do Imóvel</span>
-                            </div>
-                            <p className="whitespace-pre-line leading-loose text-slate-300">{property.description}</p>
-                        </motion.div>
+            <div className="flex flex-col">
+                {/* Gallery */}
+                <section className="order-1 lg:order-2 container mx-auto px-6 md:px-12 py-12">
+                    <div className="flex items-center gap-4 mb-10">
+                        <div className="h-[1px] w-12 bg-primary" />
+                        <h3 className="text-3xl font-display font-medium text-white tracking-widest">Galeria</h3>
                     </div>
+                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 pb-8 -mx-6 px-6 md:-mx-12 md:px-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                        {galleryImages.length > 0 ? galleryImages.map((img, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                                className="relative aspect-[4/3] md:aspect-[3/2] xl:aspect-[16/10] cursor-pointer overflow-hidden rounded-2xl group flex-none w-[85vw] sm:w-[60vw] md:w-[45vw] lg:w-[40vw] snap-center"
+                                onClick={() => openLightbox(idx)}
+                            >
+                                <Image src={img} alt="Galeria" fill sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 40vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                            </motion.div>
+                        )) : (
+                            <p className="text-white/50 w-full text-center">Nenhuma imagem adicional disponível na galeria.</p>
+                        )}
+                    </div>
+                </section>
 
-                    <div className="lg:col-span-4">
-                        <div className="sticky top-32 flex flex-col gap-8 z-10 w-full mb-16">
+                {/* Specifications & Description */}
+                <section className="order-2 lg:order-1 container mx-auto px-6 md:px-12 pt-8 lg:pt-24 pb-24">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                        <div className="lg:col-span-8 flex flex-col gap-16">
+                            {/* Status Bar */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                className="glass-bronze p-8 md:p-10 rounded-3xl hidden lg:flex flex-col gap-3 shadow-2xl border border-white/10"
+                                className="grid grid-cols-2 md:grid-cols-4 gap-6 py-10"
                             >
-                                <div className="text-sm uppercase tracking-[0.15em] text-white/70 font-medium">Valor de Venda</div>
-                                <div className="text-4xl md:text-5xl font-display font-medium text-white mb-2">{formatPrice(property.price)}</div>
-                                <button className="bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors mt-2 w-full">
-                                    <span>AGENDAR VISITA</span>
-                                    <span className="material-symbols-outlined text-lg">calendar_today</span>
-                                </button>
+                                <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
+                                    <span className="material-symbols-outlined text-primary text-4xl mb-2">bed</span>
+                                    <div className="text-3xl font-display text-white">{property.bedrooms}</div>
+                                    <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Suítes</div>
+                                </div>
+                                <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
+                                    <span className="material-symbols-outlined text-primary text-4xl mb-2">shower</span>
+                                    <div className="text-3xl font-display text-white">{property.bathrooms}</div>
+                                    <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Banheiros</div>
+                                </div>
+                                <div className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/5 rounded-2xl gap-3 hover:bg-white/10 transition-colors">
+                                    <span className="material-symbols-outlined text-primary text-4xl mb-2">directions_car</span>
+                                    <div className="text-3xl font-display text-white">{property.garages}</div>
+                                    <div className="text-xs uppercase tracking-widest text-white/50 font-bold">Vagas</div>
+                                </div>
                             </motion.div>
 
+                            {/* Description */}
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                className="bg-white/5 border border-white/10 p-10 rounded-3xl"
+                                className="prose prose-invert prose-lg max-w-none font-light text-white/80 leading-relaxed bg-white/5 p-8 md:p-12 rounded-3xl border border-white/5"
                             >
-                                <h4 className="text-2xl font-display font-medium text-white mb-8 pb-4 border-b border-white/10">Características</h4>
-                                {features.length > 0 ? (
-                                    <ul className="flex flex-col gap-6">
-                                        {features.map((f: string) => (
-                                            <li key={f} className="flex items-center gap-4 text-white/80 font-light text-base">
-                                                <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
-                                                <span>{f}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-white/50 text-sm font-light">Nenhuma característica cadastrada.</p>
-                                )}
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="h-[1px] w-12 bg-primary" />
+                                    <span className="text-primary tracking-[0.3em] uppercase text-xs font-bold">Descrição do Imóvel</span>
+                                </div>
+                                <p className="whitespace-pre-line leading-loose text-slate-300">{property.description}</p>
                             </motion.div>
                         </div>
+
+                        <div className="lg:col-span-4">
+                            <div className="sticky top-32 flex flex-col gap-8 z-10 w-full mb-16">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="glass-bronze p-8 md:p-10 rounded-3xl hidden lg:flex flex-col gap-3 shadow-2xl border border-white/10"
+                                >
+                                    <div className="text-sm uppercase tracking-[0.15em] text-white/70 font-medium">Valor de Venda</div>
+                                    <div className="text-4xl md:text-5xl font-display font-medium text-white mb-2">{formatPrice(property.price)}</div>
+                                    <button className="bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors mt-2 w-full">
+                                        <span>AGENDAR VISITA</span>
+                                        <span className="material-symbols-outlined text-lg">calendar_today</span>
+                                    </button>
+                                </motion.div>
+
+                                <motion.div
+                                    initial={{ opacity: 0, x: 20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                    className="bg-white/5 border border-white/10 p-10 rounded-3xl"
+                                >
+                                    <h4 className="text-2xl font-display font-medium text-white mb-8 pb-4 border-b border-white/10">Características</h4>
+                                    {features.length > 0 ? (
+                                        <ul className="flex flex-col gap-6">
+                                            {features.map((f: string) => (
+                                                <li key={f} className="flex items-center gap-4 text-white/80 font-light text-base">
+                                                    <span className="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                                    <span>{f}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p className="text-white/50 text-sm font-light">Nenhuma característica cadastrada.</p>
+                                    )}
+                                </motion.div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
 
 
             {/* Lightbox Modal */}

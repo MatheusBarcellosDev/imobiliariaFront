@@ -30,11 +30,11 @@ export default function Navbar() {
                 <div className="max-w-7xl mx-auto px-6 md:px-20 flex justify-between items-center text-slate-100">
                     <Link href="/" className="relative w-48 md:w-80 h-10 md:h-16 flex items-center justify-start overflow-hidden shrink-0">
                         <Image
-                            src="/logo.png"
+                            src="/logo-v4.png"
                             alt="Lorena Lorenzo Logo"
                             fill
                             sizes="(max-width: 768px) 150px, 300px"
-                            className="object-contain object-left scale-[1.3] md:scale-[1.8] origin-left"
+                            className="object-contain object-left"
                             priority
                         />
                     </Link>
